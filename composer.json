@@ -1,0 +1,19 @@
+{
+    "name": "jfelix/flex-php",
+    "version": "1.0.0",
+    "description": "Simple and flexible php framework for learning purposes",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Jfelix\\FlexPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jose Felix",
+            "email": "jafelixramos@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta",
+    "require": {}
+}
