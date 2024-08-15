@@ -4,6 +4,7 @@ namespace FlexPhp\Core\Routing;
 
 use FlexPhp\Controllers\BaseController;
 use FlexPhp\Core\Routing\Attributes\Route as RouteAttribute;
+use Stringable;
 
 class Router
 {
@@ -13,16 +14,30 @@ class Router
     {
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $response = null;
 
         foreach ($this->routes as $route) {
             if ($route->match($requestUri, $requestMethod)) {
-                $route->run();
-                return;
+                $response = $route->run();
+                break;
             }
         }
 
-        http_response_code(404);
-        echo "Página no encontrada";
+        if (is_null($response)) {
+            http_response_code(404);
+            echo "Página no encontrada";
+        }
+        
+        if ($response instanceof Stringable) {
+            echo $response; 
+        } elseif (is_string($response) || is_array($response)) {
+            echo $response; 
+        } elseif (is_object($response) && method_exists($response, '__toString')) {
+            echo $response; 
+        } else {
+            http_response_code(500);
+            echo "Error interno del servidor";
+        }
     }
 
     public function addRoute($methods, $url, $action) {
