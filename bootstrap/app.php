@@ -1,10 +1,10 @@
 <?php
 
-use FlexPhp\Controllers\BaseController;
+use FlexPhp\Controllers\UserController;
 use FlexPhp\Core\Routing\Router;
 
 $router = new Router();
 // $router->addRoute(["GET"], "/", [new BaseController(), "index"]);
-$router->registerController(new BaseController());
+$router->registerController(new UserController());
 
 $router->dispatch();
