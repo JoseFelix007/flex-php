@@ -11,4 +11,10 @@ class UserController extends BaseController
     {
         return View::load("home", ["name" => "Peter"]);
     }
+
+    #[Route("/abc")]
+    public function index()
+    {
+        return View::load("home", ["name" => "Pedro"]);
+    }
 }
