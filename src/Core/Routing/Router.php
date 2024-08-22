@@ -2,6 +2,7 @@
 
 namespace FlexPhp\Core\Routing;
 
+use FlexPhp\Config\Routes\RouteConfig;
 use FlexPhp\Controllers\BaseController;
 use FlexPhp\Core\Routing\Attributes\Route as RouteAttribute;
 use Stringable;
@@ -25,26 +26,31 @@ class Router
 
         if (is_null($response)) {
             http_response_code(404);
-            echo "Página no encontrada";
+            return "Página no encontrada";
         }
         
         if ($response instanceof Stringable) {
-            echo $response; 
+            return $response; 
         } elseif (is_string($response) || is_array($response)) {
-            echo $response; 
+            return $response; 
         } elseif (is_object($response) && method_exists($response, '__toString')) {
-            echo $response; 
+            return $response; 
         } else {
             http_response_code(500);
-            echo "Error interno del servidor";
+            return "Error interno del servidor";
         }
+    }
+
+    public function loadRoutes(RouteConfig $routeConfig)
+    {
+        $routeConfig->registerRoutes();
     }
 
     public function addRoute($methods, $url, $action) {
         $this->routes[] = $this->newRoute($methods, $url, $action);
     }
 
-    public function registerController(BaseController $controller)
+    public function addController(BaseController $controller)
     {
         $reflectionClass = new \ReflectionClass($controller);
 
