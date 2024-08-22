@@ -4,10 +4,12 @@ namespace FlexPhp\Core;
 
 use FlexPhp\Core\Container\Container;
 use FlexPhp\Core\Routing\RoutingService;
+use FlexPhp\Core\Http\Request;
 
 class Application extends Container
 {
-    public function __construct() {
+    public function __construct()
+    {
         $this->registerService(new RoutingService($this));
     }
 
@@ -19,13 +21,13 @@ class Application extends Container
 
     public function getRequest()
     {
-        return '';
+        return new Request();
     }
 
     public function sendRequestToRouter($request)
     {
         $router = $this->get('router');
-        return $router->dispatch();
+        return $router->dispatch($request);
     }
 
     public function run()

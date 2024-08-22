@@ -4,6 +4,7 @@ namespace FlexPhp\Core\Routing;
 
 use FlexPhp\Config\Routes\RouteConfig;
 use FlexPhp\Controllers\BaseController;
+use FlexPhp\Core\Http\Request;
 use FlexPhp\Core\Routing\Attributes\Route as RouteAttribute;
 use Stringable;
 
@@ -11,14 +12,12 @@ class Router
 {
     protected array $routes = [];
 
-    public function dispatch()
+    public function dispatch(Request $request)
     {
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
-        $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $response = null;
 
         foreach ($this->routes as $route) {
-            if ($route->match($requestUri, $requestMethod)) {
+            if ($route->match($request->getUri(), $request->getMethod())) {
                 $response = $route->run();
                 break;
             }
