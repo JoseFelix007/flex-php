@@ -5,6 +5,7 @@ namespace FlexPhp\Core;
 use FlexPhp\Core\Container\Container;
 use FlexPhp\Core\Routing\RoutingService;
 use FlexPhp\Core\Http\Request;
+use FlexPhp\Core\Http\Response;
 
 class Application extends Container
 {
@@ -24,7 +25,7 @@ class Application extends Container
         return new Request();
     }
 
-    public function sendRequestToRouter($request)
+    public function sendRequestToRouter($request) : Response
     {
         $router = $this->get('router');
         return $router->dispatch($request);
@@ -35,7 +36,6 @@ class Application extends Container
         $request = $this->getRequest();
         $response = $this->sendRequestToRouter($request);
 
-        echo $response;
-        return $response;
+        return $response->send();
     }
 }

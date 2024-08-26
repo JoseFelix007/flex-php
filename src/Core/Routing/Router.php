@@ -5,6 +5,8 @@ namespace FlexPhp\Core\Routing;
 use FlexPhp\Config\Routes\RouteConfig;
 use FlexPhp\Controllers\BaseController;
 use FlexPhp\Core\Http\Request;
+use FlexPhp\Core\Http\Response;
+use FlexPhp\Core\Contracts\Responsable;
 use FlexPhp\Core\Routing\Attributes\Route as RouteAttribute;
 use Stringable;
 
@@ -12,32 +14,43 @@ class Router
 {
     protected array $routes = [];
 
-    public function dispatch(Request $request)
+    public function dispatch(Request $request) : Response
     {
         $response = null;
-
         foreach ($this->routes as $route) {
             if ($route->match($request->getUri(), $request->getMethod())) {
                 $response = $route->run();
                 break;
             }
         }
+        return $this->toResponse($response);
+    }
 
+    public function toResponse(mixed $response) : Response
+    {
         if (is_null($response)) {
-            http_response_code(404);
-            return "Página no encontrada";
+            return new Response("Página no encontrada", 404, ['Content-Type' => 'text/html']); 
         }
-        
-        if ($response instanceof Stringable) {
-            return $response; 
-        } elseif (is_string($response) || is_array($response)) {
-            return $response; 
-        } elseif (is_object($response) && method_exists($response, '__toString')) {
-            return $response; 
-        } else {
-            http_response_code(500);
-            return "Error interno del servidor";
+
+        if ($response instanceof Responsable) {
+            return $reponse->toResponse();
         }
+
+        if ($response instanceof Stringable ||
+            (is_object($response) && method_exists($response, '__toString'))
+        ) {
+            return new Response($response->__toString(), 200, ['Content-Type' => 'text/html']); 
+        }
+
+        if (is_array($response)) {
+            return new Response(json_encode($response), 200, ['Content-Type' => 'text/html']); 
+        }
+
+        if (is_string($response) || is_array($response)) {
+            return new Response($response, 200, ['Content-Type' => 'text/html']); 
+        }
+
+        return new Response("Error interno del servidor", 500, ['Content-Type' => 'text/html']); 
     }
 
     public function loadRoutes(RouteConfig $routeConfig)
