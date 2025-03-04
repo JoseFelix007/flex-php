@@ -9,6 +9,5 @@ class UserRouteConfig extends RouteConfig
     public function registerRoutes()
     {
         $this->router->addController(new UserController());
-        // $router->addRoute(["GET"], "/", [new BaseController(), "index"]);
     }
 }

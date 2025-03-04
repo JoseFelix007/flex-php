@@ -6,5 +6,6 @@ A través de este desarrollo, se exploran buenas prácticas de diseño, segurida
 
 Para usarlo:
 ```
+composer dump-autoload --optimize
 php -S localhost:8000 -t public
 ```
